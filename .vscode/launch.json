@@ -2,92 +2,28 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Launch active build configuration",
-            "type": "nrf-connect",
-            "request": "launch",
-            "config": "${activeConfig}",
-            "runToEntryPoint": "main",
-            //"preLaunchTask": "nRF Connect: Build active configuration"
-            // simple, already on PATH
-            "gdbPath": "arm-zephyr-eabi-gdb",
-            "flash": false
-        },
-        {
-            "name": "Debug (force JLink)",
+            "name": "Debug STM32 (OpenOCD)",
             "request": "launch",
             "type": "cortex-debug",
-        
-            "cwd": "${workspaceFolder}",
-            "executable": "samples/test-pwm-generator/build_1/zephyr/zephyr.elf",
-            // TODO: get this dynamic from the zephyr build folder?
-            // or different approach entirely
-			// https://marketplace.visualstudio.com/items?itemName=mcu-debug.peripheral-viewer
-            
-            // needed for non Nordic boards
-            "svdPath": "${env:SVD_DIR}/STM32G0B1.svd",
-
-            // https://wiki.segger.com/J-Link_Visual_Studio_Code
-            "servertype": "jlink",
-            "serverpath": "/opt/SEGGER/JLink/JLinkGDBServerCLExe",
-            "serverArgs": [],
-            // https://www.segger.com/supported-devices/
-            "device": "STM32G0B1RE",
-
-            "preLaunchCommands": [
-                "monitor reset",
-            ],
-			// simple, already on PATH
-            "gdbPath": "arm-zephyr-eabi-gdb",
-            //"runToEntryPoint": "main",
-        },
-
-        {
-            "name": "Debug (force OpenOCD)",
-            "request": "launch",
-            "type": "cortex-debug",
-
-            "cwd": "${workspaceFolder}",
-            "executable": "samples/test-pwm-generator/build_1/zephyr/zephyr.elf",
-            // TODO: get this dynamic from the zephyr build folder?
-            // or different approach entirely
-			// https://marketplace.visualstudio.com/items?itemName=mcu-debug.peripheral-viewer
-            "svdPath": "${env:SVD_DIR}/STM32G0B1.svd",
-            "device": "stm32g0b1re",
-
-            //"servertype": "stutil",
-            /*"preLaunchCommands": [
-                "connect under reset",
-            ],
-            "serverArgs":[
-                "--connect-under-reset"
-            ],*/
-
+            "cwd": "${workspaceFolder}/mw-test-application",
+            "executable": "build/zephyr/zephyr.elf",
+            "svdPath": "${env:SVD_DIR}/STM32F401.svd",
+            "device": "stm32f401xx",
             "servertype": "openocd",
             "searchDir": [
-                "${env:ZEPHYR_SDK}/sysroots/x86_64-pokysdk-linux/usr/share/openocd/scripts"
+                "${env:ZEPHYR_SDK}/sysroots/x86_64-pokysdk-linux/usr/share/openocd/scripts/board"
             ],
             "configFiles": [
-                //"st_nucleo_f103rb.cfg"
-				"board/st_nucleo_g0.cfg",
-                //"target/stm32g0x.cfg",
-                "interface/jlink.cfg"
+                "board/st_nucleo_f4.cfg",
+                "interface/stlink.cfg",
             ],
+            "rtos": "Zephyr",
             "preLaunchCommands": [
-                "monitor reset",
+                "monitor reset"
             ],
-			
-			// simple, already on PATH
+            // "preLaunchTask": "West Debug Build",
             "gdbPath": "arm-zephyr-eabi-gdb",
-
             "runToEntryPoint": "main",
-            /*"postRestartCommands": [
-                "break main",
-                "continue"
-            ],*/
-
-            //"preLaunchTask": "West Build"
-
-            //"showDevDebugOutput": "raw"
-        },
+        }
     ]
 }

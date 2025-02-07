@@ -27,6 +27,29 @@
 			]
 		},
 		{
+			"label": "West Debug Build",
+			"type": "shell",
+			"group": {
+				"kind": "build",
+			},
+			"linux": {
+				"command": "west"
+			},
+			"options": {
+				"cwd": "${workspaceFolder}/mw-test-application/app"
+			},
+			"args": [
+				"build",
+				"-p",
+				"${input:pristine}",
+				"-b",
+				"${input:board}"
+			],
+			"problemMatcher": [
+				"$gcc"
+			]
+		},
+		{
 			"label": "Twister Run",
 			"type": "shell",
 			"group": {
@@ -55,7 +78,7 @@
 		{
 			"id": "board",
 			"type": "promptString",
-			"default": "nrf52840dk/nrf52840",
+			"default": "native_sim",
 			"description": "See https://docs.zephyrproject.org/latest/boards/index.html"
 		},
 		{
@@ -67,6 +90,15 @@
 				"auto",
 				"always",
 				"never"
+			]
+		},
+		{
+			"id": "Build configuration",
+			"type": "pickString",
+			"description": "Choose which configuration to build",
+			"default": "prj.conf",
+			"options": [
+				"prj_debug.conf"
 			]
 		}
 	]
