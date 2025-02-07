@@ -7,54 +7,55 @@ This is a template workspace for developing Zephyr RTOS application in a
 
 Make sure the prerequisites are satisfied, as described in the [Dev Containers tutorial](https://code.visualstudio.com/docs/devcontainers/tutorial). In particular, that [Docker](https://www.docker.com/products/docker-desktop/) is up and running and the [Dev Containers extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers) is installed. 
 
-## Getting started
-
-```bash
-git clone https://github.com/cooked/vscode-zephyr-devcontainer.git
-```
-
-After cloning the repo adjust the devcontainer parameters according to your 
-needs (for example, to mount folders that are outside of the project location, 
-otherwise only the workspace content is available in the container).
-
-```yml
-// eg. mount "foo" folder from your home folder, to the containerized workspace 
-"mounts": [
-    "source={env:HOME}/foo,target=${containerWorkspaceFolder}/foo,type=bind,consistency=cached",
-],
-```
 
 Finally, launch the container from inside VSCode with **CTRL+SHIFT+P** then 
 **Dev Containers: Reopen in container**.
 
-## Tasks
+# Zbus Example Application
 
-Few basic [tasks](https://github.com/cooked/vscode-zephyr-devcontainer/blob/master/.vscode/tasks.json) can be accessed with **CTRL+SHIFT+B** (to test everything is working try to run **Zephyr sample build > blinky**).
+## Overview
+This is a simple **Zephyr RTOS** application demonstrating the use of **Zbus** for inter-thread communication.
 
-## Limitations
+### **Application Flow**
+- The application consists of **two threads**: `button_thread` and `led_thread`.
+- The **button module** monitors a **physical GPIO button** and triggers an **interrupt on each edge**.
+- The **interrupt handler** sends the event to an **internal message queue**.
+- The **button thread** monitors the queue and pushes the event into a **Zbus channel**.
+- The **LED module** registers a listener to the **button channel** and sends the event to an **internal message queue**.
+- The **LED thread** receives this event and toggles an LED based on the button state:
+  - **Button Pressed** → LED **ON**
+  - **Button Released** → LED **OFF**
 
-To keep the containers small, only the required toolchain for a 
-specific target/manufacturer is installed.
+### **Key Features**
+- Uses **Zbus** for event-driven communication.
+- Demonstrates **thread synchronization using Zbus and internal queues**.
+- Includes **unit tests using Ztest**.
+- Supports **GPIO emulation** for testing on `native_sim`.
 
-Currently, only **stm32** is available as a package out of the box.
+## Supported Boards
+The example has been tested on:
+- **nRF52840DK** (`nrf52840dk/nrf52840`)
+- **Zephyr Native Simulator** (`native_sim`)
 
-Additionally, the only tested host is **Linux**.
+## Unit Tests
+This application includes **two unit tests** built with **Ztest**:
+- Tests the **button thread** and **LED thread** using **GPIO emulation**.
+- Tests the **Zbus communication** between the button and LED threads.
 
-## Developers
+## **Building and Running**
 
-The *devel* branch contains a modified *devcontainer.json* to build from the 
-local Dockerfile, useful for development (i.e. the "image" key is replaced by 
-the following snippet where fine tuning the build args is possible).
+### **Ways to Build and Run**
+1. Use **Task Manager**:
+   - **Build Task** (`west build` for `native_sim` or `nrf52840dk`)
+   - **Test Run Task** (`twister` for unit tests)
 
-```yml
-"dockerFile": "Dockerfile",
-"context": "../",
-"build": {
-    "args": {
-        "TARGET" : "stm32",
-        "TOOLCHAIN" : "arm-zephyr-eabi",
-        "ZSDK_VERSION" : "0.16.8",
-        "WEST_MANIFEST" : ".manifests/west-stm32.yml"
-    }
-}
-```
+**OR**
+
+2. Run manual `west` commands from the CLI.
+
+Note: The `devcontainer.json` file runs the `west init` and `west update` commands after the container launches.
+
+### **Flashing on nRF52 DK**
+- Build the image using task manager for the nRF52dk board.
+- Use the command `west flash --runner jlink` from the `mw-test-application` folder.
+- Open the **Serial Monitor** tab and start monitoring the logs.
