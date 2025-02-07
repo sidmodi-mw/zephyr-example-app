@@ -1,0 +1,73 @@
+{
+	// See https://go.microsoft.com/fwlink/?LinkId=733558
+	// for the documentation about the tasks.json format
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "West Configurable Build",
+			"type": "shell",
+			"group": {
+				"kind": "build",
+			},
+			"linux": {
+				"command": "west"
+			},
+			"options": {
+				"cwd": "${workspaceFolder}/mw-test-application/app"
+			},
+			"args": [
+				"build",
+				"-p",
+				"${input:pristine}",
+				"-b",
+				"${input:board}"
+			],
+			"problemMatcher": [
+				"$gcc"
+			]
+		},
+		{
+			"label": "Twister Run",
+			"type": "shell",
+			"group": {
+				"kind": "test",
+			},
+			"linux": {
+				"command": "west"
+			},
+			"options": {
+				"cwd": "${workspaceFolder}/mw-test-application"
+			},
+			"args": [
+				"twister",
+				"--clobber-output",
+				"-p",
+				"native_sim",
+				"-T",
+				"tests"
+			],
+			"problemMatcher": [
+				"$gcc"
+			]
+		}
+	],
+	"inputs": [
+		{
+			"id": "board",
+			"type": "promptString",
+			"default": "nrf52840dk/nrf52840",
+			"description": "See https://docs.zephyrproject.org/latest/boards/index.html"
+		},
+		{
+			"id": "pristine",
+			"type": "pickString",
+			"description": "Choose when to run a pristine build",
+			"default": "auto",
+			"options": [
+				"auto",
+				"always",
+				"never"
+			]
+		}
+	]
+}

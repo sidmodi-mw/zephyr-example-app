@@ -1,0 +1,10 @@
+tests:
+  led_thread.tester:
+    sysbuild: true
+    platform_allow:
+      - native_sim
+    integration_platforms:
+      - native_sim
+    tags:
+      - led_thread
+      - sysbuild
