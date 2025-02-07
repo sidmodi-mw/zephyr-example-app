@@ -5,10 +5,7 @@ external
 
 # ignore extra folders that might be left
 # by the volumes mounting process 
-boards
-drivers
 samples
-dtc
 
 # Prerequisites
 *.d
