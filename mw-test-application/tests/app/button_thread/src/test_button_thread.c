@@ -15,11 +15,11 @@
 
 LOG_MODULE_DECLARE( zbus, CONFIG_ZBUS_LOG_LEVEL );
 
-static void before_test( void * );
 static void after_test( void * );
 static void test_listener_callback( const struct zbus_channel *chan );
 
 ZBUS_LISTENER_DEFINE( test_lis, test_listener_callback );
+ZBUS_CHAN_ADD_OBS( button_thread_chan, test_lis, 3 );
 
 K_MSGQ_DEFINE( test_msgq, sizeof( enum button_press ), 10, 1 );
 
@@ -29,15 +29,8 @@ K_MSGQ_DEFINE( test_msgq, sizeof( enum button_press ), 10, 1 );
 #endif
 static const struct gpio_dt_spec button = GPIO_DT_SPEC_GET_OR( SW0_NODE, gpios, { 0 } );
 
-void before_test( void * )
-{
-    // Add the test listener to the button_thread_chan
-    zbus_chan_add_obs( &button_thread_chan, &test_lis, K_MSEC( 200 ) );
-}
-
 void after_test( void * )
 {
-    zbus_chan_rm_obs( &button_thread_chan, &test_lis, K_MSEC( 200 ) );
     k_msgq_purge( &test_msgq );
 }
 
@@ -87,4 +80,4 @@ ZTEST( integration, test_button_release )
     zassert_equal( button_event, BUTTON_RELEASE, "Button event should be BUTTON_RELEASE" );
 }
 
-ZTEST_SUITE( integration, NULL, NULL, before_test, after_test, NULL );
+ZTEST_SUITE( integration, NULL, NULL, NULL, after_test, NULL );
