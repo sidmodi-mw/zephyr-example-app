@@ -1,0 +1,5 @@
+# Config options for Button thread test
+#
+# SPDX-License-Identifier: LicenseRef-Nordic-5-Clause
+#
+source "Kconfig.zephyr"

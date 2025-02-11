@@ -24,6 +24,27 @@
             // "preLaunchTask": "West Debug Build",
             "gdbPath": "arm-zephyr-eabi-gdb",
             "runToEntryPoint": "main",
+        },
+        {
+            "name": "Zephyr Native POSIX Debug",
+            "type": "cppdbg",
+            "request": "launch",
+            "cwd": "${workspaceFolder}/mw-test-application",
+            "program": "${workspaceFolder}/mw-test-application/build/zephyr/zephyr.exe",
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "text": "-enable-pretty-printing",
+                    "description": "Enable pretty printing",
+                    "ignoreFailures": true
+                }
+            ],
+            "miDebuggerPath": "/usr/bin/gdb", // Update this path if GDB is located elsewhere
+            "stopAtEntry": false,
+            "externalConsole": false,
+            "logging": {
+                "engineLogging": true
+            }
         }
     ]
 }
