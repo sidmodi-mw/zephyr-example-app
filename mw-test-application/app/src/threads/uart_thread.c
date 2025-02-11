@@ -15,7 +15,7 @@ LOG_MODULE_REGISTER( uart_thread, LOG_LEVEL_INF );
 // Get UART configuration from the devicetree
 #define UART_NODE DT_ALIAS( datauart )
 #if !DT_NODE_HAS_STATUS_OKAY( UART_NODE )
-#error "Unsupported board: sw0 devicetree alias is not defined"
+#error "Unsupported board: datauart devicetree alias is not defined"
 #endif
 static const struct device *uart_device = DEVICE_DT_GET( UART_NODE );
 
