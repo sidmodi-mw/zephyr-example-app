@@ -10,8 +10,15 @@
  */
 
 / {
+    aliases {
+		datauart = &uart1;
+	};
 };
 
 &gpio0 {
+	status = "okay";
+};
+
+&uart1 {
 	status = "okay";
 };

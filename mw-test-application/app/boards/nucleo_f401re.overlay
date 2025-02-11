@@ -10,6 +10,10 @@
  */
 
 / {
+    aliases {
+		datauart = &usart1;
+	};
+
 	gpio_keys {
 		compatible = "gpio-keys";
 		debounce-interval-ms = <100>;
@@ -21,5 +25,13 @@
 };
 
 &gpioc {
+	status = "okay";
+};
+
+&dma1 {
+	status = "okay";
+};
+
+&dma2 {
 	status = "okay";
 };
