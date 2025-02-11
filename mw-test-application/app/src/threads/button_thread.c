@@ -10,7 +10,7 @@
 #include <zephyr/drivers/gpio.h>
 #include <zephyr/drivers/gpio/gpio_emul.h>
 
-LOG_MODULE_DECLARE( zbus, CONFIG_ZBUS_LOG_LEVEL );
+LOG_MODULE_REGISTER( button_thread, CONFIG_ZBUS_LOG_LEVEL );
 
 static void button_setup( void );
 
@@ -83,4 +83,16 @@ void button_thread( void )
     }
 }
 
+void test_thread( void )
+{
+    while( 1 )
+    {
+        gpio_emul_input_set( button.port, button.pin, 1 );
+        k_sleep( K_MSEC( 250 ) );
+        gpio_emul_input_set( button.port, button.pin, 0 );
+        k_sleep( K_MSEC( 250 ) );
+    }
+}
+
+K_THREAD_DEFINE( test_thread_id, 1024, test_thread, NULL, NULL, NULL, 3, 0, 0 );
 K_THREAD_DEFINE( button_thread_id, 1024, button_thread, NULL, NULL, NULL, 3, 0, 0 );

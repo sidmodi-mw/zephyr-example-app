@@ -3,7 +3,9 @@
         {
             "name": "Zephyr",
             "compilerPath": "${env:ZEPHYR_SDK}/arm-zephyr-eabi/bin/arm-zephyr-eabi-gcc",
-            "compileCommands": "${workspaceFolder}/mw-test-application/build/compile_commands.json",
+            "compileCommands": [
+                "${workspaceFolder}/mw-test-application/build/compile_commands.json"
+            ],
             "cStandard": "c11",
             "cppStandard": "c++17",
             "includePath": [
@@ -17,15 +19,16 @@
         {
             "name": "Zephyr-native",
             "compilerPath": "/usr/bin/gcc",
-            "compileCommands": "${workspaceFolder}/mw-test-application/build/compile_commands.json",
+            "compileCommands": [
+                "${workspaceFolder}/mw-test-application/build/compile_commands.json"
+            ],
             "cStandard": "c11",
             "cppStandard": "c++17",
             "includePath": [
                 "${default}",
                 "${workspaceFolder}/mw-test-application/build/zephyr/include/generated",
                 "${workspaceFolder}/mw-test-application/build/zephyr/include/generated/zephyr",
-                "${workspaceFolder}/external/zephyr/include",
-                "${workspaceFolder}/mw-test-application/include"
+                "${workspaceFolder}/external/zephyr/include"
             ]
         }
     ],

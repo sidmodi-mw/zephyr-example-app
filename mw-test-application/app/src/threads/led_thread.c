@@ -9,7 +9,7 @@
 #include <zephyr/zbus/zbus.h>
 #include <zephyr/drivers/gpio.h>
 
-LOG_MODULE_DECLARE( zbus, CONFIG_ZBUS_LOG_LEVEL );
+LOG_MODULE_REGISTER( led_thread, CONFIG_ZBUS_LOG_LEVEL );
 
 static void thread_listener_callback( const struct zbus_channel *chan );
 static void gpio_setup( void );
