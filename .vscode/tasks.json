@@ -4,50 +4,48 @@
 	"version": "2.0.0",
 	"tasks": [
 		{
-			"label": "West Configurable Build",
+			"label": "Build",
 			"type": "shell",
 			"group": {
 				"kind": "build",
 			},
-			"linux": {
-				"command": "west"
-			},
 			"options": {
-				"cwd": "${workspaceFolder}/mw-test-application/app"
+				"cwd": "${workspaceFolder}/mw-test-application"
 			},
+			"command": "python3",
 			"args": [
-				"build",
-				"-p",
+				"${workspaceFolder}/mw-test-application/scripts/build_and_flash.py",
+				"${input:board}",
+				"--pristine",
 				"${input:pristine}",
-				"-b",
-				"${input:board}"
+				"--app",
+				"app/",
+				"--flash",
+				"false"
 			],
 			"problemMatcher": [
 				"$gcc"
 			]
 		},
 		{
-			"label": "West Debug Build",
+			"label": "Build and Flash",
 			"type": "shell",
 			"group": {
 				"kind": "build",
 			},
-			"linux": {
-				"command": "west"
-			},
 			"options": {
-				"cwd": "${workspaceFolder}/mw-test-application/app"
+				"cwd": "${workspaceFolder}/mw-test-application"
 			},
+			"command": "python3",
 			"args": [
-				"build",
-				"-p",
+				"${workspaceFolder}/mw-test-application/scripts/build_and_flash.py",
+				"${input:hw_board}",
+				"--pristine",
 				"${input:pristine}",
-				"-b",
-				"${input:board}"
+				"--app",
+				"app/"
 			],
-			"problemMatcher": [
-				"$gcc"
-			]
+			"problemMatcher": []
 		},
 		{
 			"label": "Twister Run",
@@ -77,9 +75,24 @@
 	"inputs": [
 		{
 			"id": "board",
-			"type": "promptString",
+			"type": "pickString",
 			"default": "native_sim",
-			"description": "See https://docs.zephyrproject.org/latest/boards/index.html"
+			"description": "See https://docs.zephyrproject.org/latest/boards/index.html",
+			"options": [
+				"native_sim",
+				"nrf52840dk/nrf52840",
+				"nucleo_f401re"
+			]
+		},
+		{
+			"id": "hw_board",
+			"type": "pickString",
+			"default": "nrf52840dk/nrf52840",
+			"description": "See https://docs.zephyrproject.org/latest/boards/index.html",
+			"options": [
+				"nrf52840dk/nrf52840",
+				"nucleo_f401re"
+			]
 		},
 		{
 			"id": "pristine",

@@ -26,6 +26,29 @@
             "runToEntryPoint": "main",
         },
         {
+            "name": "Debug nRF52 (jlink)",
+            "request": "launch",
+            "type": "cortex-debug",
+            "cwd": "${workspaceFolder}/mw-test-application",
+            "executable": "build/zephyr/zephyr.elf",
+            "svdPath": "${workspaceFolder}/external/modules/hal/nordic/nrfx/mdk/nrf52840.svd",
+            "device": "nrf52",
+            "servertype": "jlink",
+            "searchDir": [
+                "${env:ZEPHYR_SDK}/sysroots/x86_64-pokysdk-linux/usr/share/openocd/scripts/board"
+            ],
+            "configFiles": [
+                "board/nordic_nrf52_dk.cfg",
+                "interface/jlink.cfg",
+            ],
+            "rtos": "Zephyr",
+            "preLaunchCommands": [
+                "monitor reset"
+            ],
+            "gdbPath": "arm-zephyr-eabi-gdb",
+            "runToEntryPoint": "main",
+        },
+        {
             "name": "Zephyr Native POSIX Debug",
             "type": "cppdbg",
             "request": "launch",
