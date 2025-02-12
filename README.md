@@ -58,9 +58,9 @@ This project demonstrates Zbus-based inter-thread communication in Zephyr.
 
 ### Key Features
 ✅ Zbus based event-driven communication  
-✅ Thread synchronization using internal queues
+✅ Thread synchronization using internal queues  
 ✅ Unit tests using Ztest  
-✅ GPIO & UART emulation for `native_sim`
+✅ GPIO & UART emulation for `native_sim`  
 ✅ Zephyr Shell integration for debugging
 
 ### Application Flow
