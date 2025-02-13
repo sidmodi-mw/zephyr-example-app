@@ -143,7 +143,7 @@ Launch a debug session via the **Run & Debug** panel.
 To use **Nordic's Zephyr fork** & **nRF Connect SDK**:
 1. Modify `.devcontainer/devcontainer.json`:
    ```json
-   "image": "ghcr.io/mistywest/zephyr-nrf:amd64"
+   "image": "ghcr.io/mistywest/zephyr-nrf:v2.9.0-amd64"
    ```
 2. Add the following to the `extensions` section of `.devcontainer/devcontainer.json`:
    ```json
