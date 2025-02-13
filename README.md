@@ -43,7 +43,7 @@ Before using this repository, ensure the following prerequisites are met:
 ## West Workspace Configuration
 This project follows Zephyr's **[Star Topology](https://docs.zephyrproject.org/latest/develop/west/workspaces.html#t2-star-topology-application-is-the-manifest-repository)** where:
 - The West manifest (`west.yaml`) is located inside `<project-name>`.
-- `west init` and `west update` are executed automatically when the container starts (check the `postCreateCommand` in the `devcontainer.json` file.
+- `west init` and `west update` are executed automatically when the container starts (check the `postCreateCommand` in the `devcontainer.json` file and the `setup_west.sh` file).
 - The manifest specifies the external modules, including Zephyr RTOS.
 - To modify modules, update the manifest and run:
   ```sh

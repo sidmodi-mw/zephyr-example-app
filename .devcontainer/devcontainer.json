@@ -16,7 +16,7 @@
     "workspaceFolder": "/home/user/workspace",
     // make a list of ports inside the container available locally
     "forwardPorts": [],
-    "postCreateCommand": "west init -l mw-test-application; west update --narrow -o=--depth=1",
+    "postCreateCommand": "./west_setup.sh",
     // Configure tool-specific properties.
     // https://code.visualstudio.com/docs/remote/devcontainerjson-reference#_vs-code-specific-properties
     "customizations": {
