@@ -1,20 +1,16 @@
 // For format details, see https://aka.ms/vscode-remote/devcontainer.json
 {
     "name": "vscode-zephyr",
-    // build with Dockerfile and args
-    // see also https://aka.ms/vscode-remote/containers/non-root.
-    "image": "ghcr.io/mistywest/zephyr-base:amd64",
+    "image": "ghcr.io/mistywest/zephyr-dev:amd64",
     "remoteUser": "user",
-    // The optional 'runArgs' property can be used to specify additional runtime arguments.
     "runArgs": [
         "-v",
-        "/dev:/dev", //
-        "--privileged" // allows access to tty* devices
+        "/dev:/dev",
+        "--privileged"
     ],
     // https://code.visualstudio.com/remote/advancedcontainers/change-default-source-mount
     "workspaceMount": "source=${localWorkspaceFolder},target=/home/user/workspace,type=bind,consistency=cached",
     "workspaceFolder": "/home/user/workspace",
-    // make a list of ports inside the container available locally
     "forwardPorts": [],
     "postCreateCommand": "./west_setup.sh",
     // Configure tool-specific properties.
@@ -36,19 +32,17 @@
                 }
             },
             "extensions": [
-                "mcu-debug.debug-tracker-vscode", // needed by cortex-debug
+                "mcu-debug.debug-tracker-vscode",
                 "ms-vscode.embedded-tools",
-                // core
                 "ms-vscode.cpptools",
-                // debug
                 "ms-vscode.vscode-serial-monitor",
                 "marus25.cortex-debug",
-                // editing
                 "stkb.rewrap",
                 "wayou.vscode-todo-highlight",
-                // task utils
-                "augustocdias.tasks-shell-input", // MANDATORY for dynamic task input
-                "cnshenj.vscode-task-manager"
+                "augustocdias.tasks-shell-input",
+                "cnshenj.vscode-task-manager",
+                "nordic-semiconductor.nrf-connect",
+                "nordic-semiconductor.nrf-connect-extension-pack"
             ]
         }
     }
