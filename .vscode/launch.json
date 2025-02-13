@@ -6,7 +6,7 @@
             "request": "launch",
             "type": "cortex-debug",
             "cwd": "${workspaceFolder}/mw-test-application",
-            "executable": "build/zephyr/zephyr.elf",
+            "executable": "app/build/zephyr/zephyr.elf",
             "svdPath": "${env:SVD_DIR}/STM32F401.svd",
             "device": "stm32f401xx",
             "servertype": "openocd",
@@ -30,7 +30,7 @@
             "request": "launch",
             "type": "cortex-debug",
             "cwd": "${workspaceFolder}/mw-test-application",
-            "executable": "build/zephyr/zephyr.elf",
+            "executable": "app/build/zephyr/zephyr.elf",
             "svdPath": "${workspaceFolder}/external/modules/hal/nordic/nrfx/mdk/nrf52840.svd",
             "device": "nrf52",
             "servertype": "jlink",
@@ -53,7 +53,7 @@
             "type": "cppdbg",
             "request": "launch",
             "cwd": "${workspaceFolder}/mw-test-application",
-            "program": "${workspaceFolder}/mw-test-application/build/zephyr/zephyr.exe",
+            "program": "${workspaceFolder}/mw-test-application/app/build/zephyr/zephyr.exe",
             "MIMode": "gdb",
             "setupCommands": [
                 {

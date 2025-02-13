@@ -10,11 +10,48 @@ on:
       - main
       - develop
 
+env:
+  proj_folder_name: mw-example-application
+
 jobs:
+  test:
+    name: Run Twister Tests with Coverage
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/mistywest/zephyr-base:amd64
+      options: --user root
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Initialize West
+        run: |
+          pwd
+          echo 'GH Workspace: ${{ github.workspace }}'
+          west init -l ${{ env.proj_folder_name }}
+          west update --narrow -o=--depth=1
+          west zephyr-export
+
+      - name: Run Twister Tests with Coverage
+        env:
+          test_dir: ${{ github.workspace }}/${{ env.proj_folder_name }}/tests
+        run: |
+          west twister --coverage --enable-asan --enable-ubsan -p native_sim --outdir twister_output -T ${{ env.test_dir }}
+
+      - name: Upload Test Reports
+        uses: actions/upload-artifact@v4
+        with:
+          name: twister_test_coverage
+          path: twister_output/coverage/
+
   build:
     name: Build Zephyr Application
     runs-on: ubuntu-latest
-    container: ghcr.io/mistywest/zephyr-base:amd64
+    container:
+      image: ghcr.io/mistywest/zephyr-base:amd64
+      options: --user root
+    needs: test
 
     strategy:
       matrix:
@@ -26,42 +63,18 @@ jobs:
 
       - name: Initialize West
         run: |
-          west init -l .
-          west update
+          west init -l ${{ env.proj_folder_name }}
+          west update --narrow -o=--depth=1
           west zephyr-export
 
       - name: Build Application for ${{ matrix.board }}
+        env:
+          app_src_dir: ${{ github.workspace }}/${{ env.proj_folder_name }}/app
         run: |
-          west build -b ${{ matrix.board }} --pristine always -d build_${{ matrix.board }}
+          west build -b ${{ matrix.board }} --pristine always -d build_${{ matrix.board }} -s ${{ env.app_src_dir }}
 
       - name: Upload Build Artifacts
         uses: actions/upload-artifact@v4
         with:
           name: firmware_${{ matrix.board }}
           path: build_${{ matrix.board }}/zephyr/*.bin
-
-  test:
-    name: Run Twister Tests with Coverage
-    runs-on: ubuntu-latest
-    container: ghcr.io/mistywest/zephyr-base:amd64
-    needs: build
-
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
-
-      - name: Initialize West
-        run: |
-          west init -l .
-          west update
-          west zephyr-export
-
-      - name: Run Twister Tests with Coverage
-        run: |
-          west twister --coverage -p native_sim --outdir twister_output
-
-      - name: Upload Test Reports
-        uses: actions/upload-artifact@v4
-        with:
-          name: twister_test_coverage
-          path: twister_output/coverage/

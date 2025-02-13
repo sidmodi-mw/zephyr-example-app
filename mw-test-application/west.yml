@@ -8,8 +8,23 @@ manifest:
   remotes:
     - name: zephyrproject-rtos
       url-base: https://github.com/zephyrproject-rtos
-
+    # - name: nrf
+    #   url-base: https://github.com/nrfconnect
   projects:
+    # - name: sdk-nrf
+    #   # update once nrf-sdk is forked to sidmodi-mw
+    #   remote: nrf
+    #   path: nrf
+    #   revision: v2.9.0
+    #   import:
+    #     path-prefix: external
+    #     name-allowlist:
+    #       - zephyr
+    #       - mcuboot
+    #       - cmsis      # required by the ARM port
+    #       - hal_nordic # required by the custom_plank board (Nordic based)
+    #       - hal_stm32  # required by the nucleo_f302r8 board (STM32 based)
+
     - name: zephyr
       remote: zephyrproject-rtos
       revision: main
