@@ -35,7 +35,7 @@ jobs:
           west build -b ${{ matrix.board }} --pristine always -d build_${{ matrix.board }}
 
       - name: Upload Build Artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: firmware_${{ matrix.board }}
           path: build_${{ matrix.board }}/zephyr/*.bin
@@ -61,7 +61,7 @@ jobs:
           west twister --coverage -p native_sim --outdir twister_output
 
       - name: Upload Test Reports
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: twister_test_coverage
           path: twister_output/coverage/
