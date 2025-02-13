@@ -27,9 +27,6 @@ jobs:
 
       - name: Initialize West
         run: |
-          pwd
-          echo 'github.workspace: ${{ github.workspace }}'
-          echo 'GITHUB_WORKSPACE: $GITHUB_WORKSPACE'
           west init -l ${{ env.proj_folder_name }}
           west update --narrow -o=--depth=1
           west zephyr-export
