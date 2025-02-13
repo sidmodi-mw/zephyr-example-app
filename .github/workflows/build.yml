@@ -31,29 +31,11 @@ jobs:
           west update --narrow -o=--depth=1
           west zephyr-export
 
-      - name: Cache West Modules
-        uses: actions/cache@v3
-        with:
-          path: |
-            .west
-            ./external/*
-          key: west-modules-${{ runner.os }}-${{ hashFiles('.west/config') }}
-          restore-keys: |
-            west-modules-${{ runner.os }}-
-
       - name: Run Twister Tests with Coverage
         env:
           test_dir: $GITHUB_WORKSPACE/${{ env.proj_folder_name }}/tests
         run: |
           west twister --coverage --enable-asan --enable-ubsan -p native_sim --outdir twister_output -T ${{ env.test_dir }}
-
-      - name: Cache Twister Output
-        uses: actions/cache@v3
-        with:
-          path: twister_output
-          key: twister-${{ runner.os }}-${{ github.sha }}
-          restore-keys: |
-            twister-${{ runner.os }}-
 
       - name: Upload Test Reports
         uses: actions/upload-artifact@v4
@@ -77,16 +59,6 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Cache West Modules
-        uses: actions/cache@v3
-        with:
-          path: |
-            .west
-            ./external
-          key: west-modules-${{ runner.os }}-${{ hashFiles('.west/config') }}
-          restore-keys: |
-            west-modules-${{ runner.os }}-
-
       - name: Initialize West
         run: |
           west init -l ${{ env.proj_folder_name }}
@@ -96,14 +68,6 @@ jobs:
       - name: Set Safe Board Name
         id: set_board_name
         run: echo "safe_board=$(echo '${{ matrix.board }}' | tr '/' '_')" >> $GITHUB_ENV
-
-      # - name: Cache Build Artifacts
-      #   uses: actions/cache@v3
-      #   with:
-      #     path: build_${{ env.safe_board }}
-      #     key: build-${{ env.safe_board }}-${{ runner.os }}-${{ github.sha }}
-      #     restore-keys: |
-      #       build-${{ env.safe_board }}-${{ runner.os }}-
 
       - name: Build Application for ${{ matrix.board }}
         env:
