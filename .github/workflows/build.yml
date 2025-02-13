@@ -11,7 +11,7 @@ on:
       - develop
 
 env:
-  proj_folder_name: mw-example-application
+  proj_folder_name: mw-test-application
 
 jobs:
   test:
@@ -32,6 +32,9 @@ jobs:
           west init -l ${{ env.proj_folder_name }}
           west update --narrow -o=--depth=1
           west zephyr-export
+
+      - name: Setup tmate session
+        uses: mxschmitt/action-tmate@v3
 
       - name: Run Twister Tests with Coverage
         env:
