@@ -28,7 +28,8 @@ jobs:
       - name: Initialize West
         run: |
           pwd
-          echo 'GH Workspace: ${{ github.workspace }}'
+          echo 'github.workspace: ${{ github.workspace }}'
+          echo 'GITHUB_WORKSPACE: $GITHUB_WORKSPACE'
           west init -l ${{ env.proj_folder_name }}
           west update --narrow -o=--depth=1
           west zephyr-export
@@ -38,7 +39,7 @@ jobs:
 
       - name: Run Twister Tests with Coverage
         env:
-          test_dir: ${{ github.workspace }}/${{ env.proj_folder_name }}/tests
+          test_dir: $GITHUB_WORKSPACE/${{ env.proj_folder_name }}/tests
         run: |
           west twister --coverage --enable-asan --enable-ubsan -p native_sim --outdir twister_output -T ${{ env.test_dir }}
 
@@ -72,7 +73,7 @@ jobs:
 
       - name: Build Application for ${{ matrix.board }}
         env:
-          app_src_dir: ${{ github.workspace }}/${{ env.proj_folder_name }}/app
+          app_src_dir: $GITHUB_WORKSPACE/${{ env.proj_folder_name }}/app
         run: |
           west build -b ${{ matrix.board }} --pristine always -d build_${{ matrix.board }} -s ${{ env.app_src_dir }}
 
