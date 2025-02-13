@@ -18,7 +18,7 @@ jobs:
     name: Run Twister Tests with Coverage
     runs-on: ubuntu-latest
     container:
-      image: ghcr.io/mistywest/zephyr-base:amd64
+      image: ghcr.io/mistywest/zephyr-ci:amd64
       options: --user root
 
     steps:
@@ -45,7 +45,7 @@ jobs:
     name: Build Zephyr Application
     runs-on: ubuntu-latest
     container:
-      image: ghcr.io/mistywest/zephyr-base:amd64
+      image: ghcr.io/mistywest/zephyr-ci:amd64
       options: --user root
     needs: test
 
