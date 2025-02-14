@@ -1,0 +1,24 @@
+menu "LED"
+
+config APP_LED_THREAD_STACK_SIZE
+	int "Thread stack size"
+	default 256
+
+config APP_LED_MSGQ_SIZE
+	int "Message queue size"
+	default 5
+
+config APP_LED_WATCHDOG_TIMEOUT_SECONDS
+	int "Watchdog timeout seconds"
+	default 120
+
+config APP_LED_MSGQ_TIMEOUT_SECONDS
+	int "Wait for message timeout seconds"
+	default 60
+
+# https://docs.zephyrproject.org/latest/services/logging/index.html#logging-in-a-module
+module = APP_LED
+module-str = LED
+source "subsys/logging/Kconfig.template.log_config"
+
+endmenu # LED

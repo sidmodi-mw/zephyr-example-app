@@ -3,14 +3,18 @@
  * Copyright (c) 2022 Rodrigo Peixoto <rodrigopex@gmail.com>
  * SPDX-License-Identifier: Apache-2.0
  */
-#include "messages.h"
+#include "zbus_channels.h"
 
 #include <zephyr/logging/log.h>
-#include <zephyr/zbus/zbus.h>
 #include <zephyr/drivers/uart.h>
+#include <zephyr/task_wdt/task_wdt.h>
+#include <zephyr/zbus/zbus.h>
 #include <zephyr/kernel.h>
 
-LOG_MODULE_REGISTER( uart_thread, LOG_LEVEL_INF );
+LOG_MODULE_REGISTER( uart_thread, CONFIG_APP_UART_LOG_LEVEL );
+
+BUILD_ASSERT( CONFIG_APP_UART_WATCHDOG_TIMEOUT_SECONDS > CONFIG_APP_UART_PIPE_READ_TIMEOUT_SECONDS,
+              "Watchdog timeout must be greater than trigger timeout" );
 
 // Get UART configuration from the devicetree
 #define UART_NODE DT_ALIAS( datauart )
@@ -26,20 +30,18 @@ static const struct device *uart_device = DEVICE_DT_GET( UART_NODE );
 uint8_t g_rxDoubleBuffer[2][UART_RX_BUFFER_SIZE] = { 0 };
 uint8_t g_activeBuffer                           = 0;
 
-static void uart_data_handler( struct uart_event *evt );
+static void task_wdt_callback( int channel_id, void *user_data );
 static void uart_cb( const struct device *p_dev, struct uart_event *p_evt, void *p_user_data );
+static void uart_data_handler( struct uart_event *evt );
 static int  uart_init( void );
 static void uart_thread( void );
 
-ZBUS_CHAN_DEFINE( uart_thread_chan,                       /* Name */
-                  struct uart_msg,                        /* Message type */
-                  NULL,                                   /* Validator */
-                  NULL,                                   /* User data */
-                  ZBUS_OBSERVERS_EMPTY,                   /* observers */
-                  ZBUS_MSG_INIT(.data = { 0 }, .len = 0 ) /* Initial value major 0, minor 1, build 2 */
-);
-
 K_PIPE_DEFINE( uart_pipe, UART_PIPE_SIZE, 4 );
+
+void task_wdt_callback( int channel_id, void *user_data )
+{
+    LOG_ERR( "Watchdog expired, Channel: %d, Thread: %s", channel_id, k_thread_name_get( (k_tid_t)user_data ) );
+}
 
 void uart_cb( const struct device *p_dev, struct uart_event *p_evt, void *p_user_data )
 {
@@ -123,7 +125,21 @@ int uart_init( void )
 
 void uart_thread( void )
 {
-    struct uart_msg uart_message = { 0 };
+    struct uart_msg   uart_message   = { 0 };
+    size_t            bytes_read     = 0;
+    int               ret            = -1;
+    int               task_wdt_id    = -1;
+    const uint32_t    wdt_timeout_ms = ( CONFIG_APP_UART_WATCHDOG_TIMEOUT_SECONDS * MSEC_PER_SEC );
+    const k_timeout_t pipe_wait_ms   = K_MSEC( CONFIG_APP_UART_PIPE_READ_TIMEOUT_SECONDS * MSEC_PER_SEC );
+
+    LOG_DBG( "UART module thread started" );
+
+    task_wdt_id = task_wdt_add( wdt_timeout_ms, task_wdt_callback, (void *)k_current_get() );
+    if( task_wdt_id < 0 )
+    {
+        LOG_ERR( "Failed to add task to watchdog: %d", task_wdt_id );
+        return;
+    }
 
     uart_init();
 
@@ -134,12 +150,29 @@ void uart_thread( void )
     uart_message.len = sizeof( uart_message.data );
     while( true )
     {
-        k_pipe_read( &uart_pipe, uart_message.data, uart_message.len, K_FOREVER );
-        LOG_INF( "Received %d bytes on UART", uart_message.len );
+        ret = task_wdt_feed( task_wdt_id );
+        if( ret )
+        {
+            LOG_ERR( "Failed to feed the watchdog: %d", ret );
+            return;
+        }
 
-        // Publish received data
-        zbus_chan_pub( &uart_thread_chan, &uart_message, K_NO_WAIT );
+        ret = k_pipe_read( &uart_pipe, uart_message.data, uart_message.len - bytes_read, pipe_wait_ms );
+        if( ret < 0 )
+        {
+            // Error
+            continue;
+        }
+
+        LOG_DBG( "Received %d bytes on UART", ret );
+        bytes_read += ret;
+
+        if( bytes_read == uart_message.len )
+        {
+            // Publish received data
+            zbus_chan_pub( &UART_CHAN, &uart_message, K_NO_WAIT );
+        }
     }
 }
 
-K_THREAD_DEFINE( uart_thread_id, 1024, uart_thread, NULL, NULL, NULL, 3, 0, 0 );
+K_THREAD_DEFINE( uart_thread_id, CONFIG_APP_UART_THREAD_STACK_SIZE, uart_thread, NULL, NULL, NULL, 3, 0, 0 );
