@@ -1,13 +1,8 @@
-/*
- * Copyright (c) 2022 Rodrigo Peixoto <rodrigopex@gmail.com>
- * SPDX-License-Identifier: Apache-2.0
- */
-#include "messages.h"
-#include "button_thread.h"
-
 #include <zephyr/logging/log.h>
 #include <zephyr/zbus/zbus.h>
 #include <zephyr/drivers/gpio.h>
+
+#include "zbus_channels.h"
 
 LOG_MODULE_REGISTER( led_thread, CONFIG_ZBUS_LOG_LEVEL );
 
@@ -15,7 +10,7 @@ static void thread_listener_callback( const struct zbus_channel *chan );
 static void gpio_setup( void );
 
 ZBUS_LISTENER_DEFINE( led_thread_lis, thread_listener_callback );
-ZBUS_CHAN_ADD_OBS( button_thread_chan, led_thread_lis, 3 );
+ZBUS_CHAN_ADD_OBS( BUTTON_CHAN, led_thread_lis, 3 );
 
 K_MSGQ_DEFINE( thread_msgq, sizeof( enum button_press ), 10, 1 );
 

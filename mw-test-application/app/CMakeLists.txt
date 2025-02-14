@@ -8,7 +8,12 @@ target_sources(app PRIVATE src/main.c)
 
 # Include source directory
 target_include_directories(app PRIVATE src)
-target_include_directories(app PRIVATE src/include)
+target_include_directories(app PRIVATE src/common)
 
-# Application directories
-add_subdirectory(src/threads)
+# Include files that are common for all modules
+add_subdirectory(src/common)
+
+# # Include modules
+add_subdirectory(src/modules/button)
+add_subdirectory(src/modules/led)
+add_subdirectory(src/modules/uart)

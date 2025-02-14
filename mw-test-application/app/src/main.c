@@ -9,11 +9,7 @@
 #include <zephyr/logging/log.h>
 #include <zephyr/zbus/zbus.h>
 
-#include "messages.h"
-
-LOG_MODULE_DECLARE( zbus, CONFIG_ZBUS_LOG_LEVEL );
-
-ZBUS_CHAN_DECLARE( thread1_chan, thread2_chan );
+LOG_MODULE_REGISTER( app, CONFIG_APP_LOG_LEVEL );
 
 static bool print_channel_data_iterator( const struct zbus_channel *chan, void *user_data )
 {

@@ -2,24 +2,17 @@
  * Copyright (c) 2022 Rodrigo Peixoto <rodrigopex@gmail.com>
  * SPDX-License-Identifier: Apache-2.0
  */
-#include "messages.h"
-
 #include <zephyr/logging/log.h>
 #include <zephyr/zbus/zbus.h>
 #include <zephyr/device.h>
 #include <zephyr/drivers/gpio.h>
 
-LOG_MODULE_REGISTER( button_thread, CONFIG_ZBUS_LOG_LEVEL );
+#include "zbus_channels.h"
+
+/* Register log module */
+LOG_MODULE_REGISTER( button, CONFIG_APP_BUTTON_LOG_LEVEL );
 
 static void button_setup( void );
-
-ZBUS_CHAN_DEFINE( button_thread_chan,             /* Name */
-                  enum button_press,              /* Message type */
-                  NULL,                           /* Validator */
-                  NULL,                           /* User data */
-                  ZBUS_OBSERVERS_EMPTY,           /* observers */
-                  ZBUS_MSG_INIT( BUTTON_INVALID ) /* Initial value major 0, minor 1, build 2 */
-);
 
 K_MSGQ_DEFINE( button_msgq, sizeof( enum button_press ), 10, 1 );
 
@@ -78,7 +71,7 @@ void button_thread( void )
     while( 1 )
     {
         k_msgq_get( &button_msgq, &button_event, K_FOREVER );
-        zbus_chan_pub( &button_thread_chan, &button_event, K_SECONDS( 1 ) );
+        zbus_chan_pub( &BUTTON_CHAN, &button_event, K_SECONDS( 1 ) );
     }
 }
 

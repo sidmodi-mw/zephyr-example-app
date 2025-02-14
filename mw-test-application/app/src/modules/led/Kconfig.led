@@ -1,0 +1,8 @@
+menu "LED"
+
+# https://docs.zephyrproject.org/latest/services/logging/index.html#logging-in-a-module
+module = APP_LED
+module-str = LED
+source "subsys/logging/Kconfig.template.log_config"
+
+endmenu # LED

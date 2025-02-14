@@ -3,7 +3,7 @@
  * Copyright (c) 2022 Rodrigo Peixoto <rodrigopex@gmail.com>
  * SPDX-License-Identifier: Apache-2.0
  */
-#include "messages.h"
+#include "zbus_channels.h"
 
 #include <zephyr/logging/log.h>
 #include <zephyr/zbus/zbus.h>
@@ -30,14 +30,6 @@ static void uart_data_handler( struct uart_event *evt );
 static void uart_cb( const struct device *p_dev, struct uart_event *p_evt, void *p_user_data );
 static int  uart_init( void );
 static void uart_thread( void );
-
-ZBUS_CHAN_DEFINE( uart_thread_chan,                       /* Name */
-                  struct uart_msg,                        /* Message type */
-                  NULL,                                   /* Validator */
-                  NULL,                                   /* User data */
-                  ZBUS_OBSERVERS_EMPTY,                   /* observers */
-                  ZBUS_MSG_INIT(.data = { 0 }, .len = 0 ) /* Initial value major 0, minor 1, build 2 */
-);
 
 K_PIPE_DEFINE( uart_pipe, UART_PIPE_SIZE, 4 );
 
@@ -138,7 +130,7 @@ void uart_thread( void )
         LOG_INF( "Received %d bytes on UART", uart_message.len );
 
         // Publish received data
-        zbus_chan_pub( &uart_thread_chan, &uart_message, K_NO_WAIT );
+        zbus_chan_pub( &UART_CHAN, &uart_message, K_NO_WAIT );
     }
 }
 

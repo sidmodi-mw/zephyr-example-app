@@ -1,11 +1,3 @@
-/*
- * Copyright (c) 2022 Rodrigo Peixoto <rodrigopex@gmail.com>
- * SPDX-License-Identifier: Apache-2.0
- */
-
-#include "messages.h"
-#include "uart_thread.h"
-
 #include <zephyr/irq_offload.h>
 #include <zephyr/kernel.h>
 #include <zephyr/logging/log.h>
@@ -13,13 +5,15 @@
 #include <zephyr/ztest.h>
 #include <zephyr/drivers/serial/uart_emul.h>
 
-LOG_MODULE_DECLARE( zbus, CONFIG_ZBUS_LOG_LEVEL );
+#include "zbus_channels.h"
+
+LOG_MODULE_REGISTER( test_uart_thread, CONFIG_LOG_LEVEL_DBG );
 
 static void after_test( void * );
 static void test_listener_callback( const struct zbus_channel *chan );
 
 ZBUS_LISTENER_DEFINE( test_lis, test_listener_callback );
-ZBUS_CHAN_ADD_OBS( uart_thread_chan, test_lis, 3 );
+ZBUS_CHAN_ADD_OBS( UART_CHAN, test_lis, 3 );
 
 K_MSGQ_DEFINE( test_msgq, sizeof( struct uart_msg ), 10, 1 );
 

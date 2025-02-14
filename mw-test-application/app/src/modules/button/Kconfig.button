@@ -1,0 +1,8 @@
+menu "Button"
+
+# https://docs.zephyrproject.org/latest/services/logging/index.html#logging-in-a-module
+module = APP_BUTTON
+module-str = Button
+source "subsys/logging/Kconfig.template.log_config"
+
+endmenu # Button
