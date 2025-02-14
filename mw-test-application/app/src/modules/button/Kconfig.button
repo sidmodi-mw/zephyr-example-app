@@ -1,5 +1,21 @@
 menu "Button"
 
+config APP_BUTTON_THREAD_STACK_SIZE
+	int "Thread stack size"
+	default 256
+
+config APP_BUTTON_MSGQ_SIZE
+	int "Message queue size"
+	default 5
+
+config APP_BUTTON_WATCHDOG_TIMEOUT_SECONDS
+	int "Watchdog timeout seconds"
+	default 120
+
+config APP_BUTTON_MSGQ_TIMEOUT_SECONDS
+	int "Wait for message timeout seconds"
+	default 60
+
 # https://docs.zephyrproject.org/latest/services/logging/index.html#logging-in-a-module
 module = APP_BUTTON
 module-str = Button

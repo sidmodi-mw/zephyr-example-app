@@ -1,5 +1,17 @@
 menu "UART"
 
+config APP_UART_THREAD_STACK_SIZE
+	int "Thread stack size"
+	default 1536
+
+config APP_UART_WATCHDOG_TIMEOUT_SECONDS
+	int "Watchdog timeout seconds"
+	default 120
+
+config APP_UART_PIPE_READ_TIMEOUT_SECONDS
+	int "Wait for pipe read timeout seconds"
+	default 60
+
 # https://docs.zephyrproject.org/latest/services/logging/index.html#logging-in-a-module
 module = APP_UART
 module-str = UART

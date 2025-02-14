@@ -7,15 +7,15 @@
 
 #include "zbus_channels.h"
 
-LOG_MODULE_REGISTER( test_button_thread, CONFIG_LOG_LEVEL_DBG );
+LOG_MODULE_REGISTER( test_button_thread, LOG_LEVEL_DBG );
 
 static void after_test( void * );
 static void test_listener_callback( const struct zbus_channel *chan );
 
 ZBUS_LISTENER_DEFINE( test_lis, test_listener_callback );
-ZBUS_CHAN_ADD_OBS( BUTTON_CHAN, test_lis, 3 );
+ZBUS_CHAN_ADD_OBS( BUTTON_CHAN, test_lis, 0 );
 
-K_MSGQ_DEFINE( test_msgq, sizeof( enum button_press ), 10, 1 );
+K_MSGQ_DEFINE( test_msgq, sizeof( struct button_msg ), 10, 1 );
 
 #define SW0_NODE DT_ALIAS( sw0 )
 #if !DT_NODE_HAS_STATUS_OKAY( SW0_NODE )
@@ -30,10 +30,10 @@ void after_test( void * )
 
 void test_listener_callback( const struct zbus_channel *chan )
 {
-    const enum button_press *button_msg = zbus_chan_const_msg( chan );
-    k_msgq_put( &test_msgq, button_msg, K_NO_WAIT );
+    const struct button_msg *message = zbus_chan_const_msg( chan );
+    k_msgq_put( &test_msgq, message, K_NO_WAIT );
 
-    LOG_INF( "From listener -> Button event: %s", *button_msg == BUTTON_PRESS ? "PRESS" : "RELEASE" );
+    LOG_INF( "From listener -> Button event: %s", message->press == BUTTON_PRESS ? "PRESS" : "RELEASE" );
 }
 
 ZTEST( integration, test_button_press )
@@ -49,10 +49,11 @@ ZTEST( integration, test_button_press )
     k_sleep( K_MSEC( 10 ) );
     gpio_emul_input_set( button.port, button.pin, 0 );
 
-    // Wait for the button event
-    enum button_press button_event = BUTTON_RELEASE;
-    k_msgq_get( &test_msgq, &button_event, K_FOREVER );
-    zassert_equal( button_event, BUTTON_PRESS, "Button event should be BUTTON_PRESS" );
+    // Wait for the button message
+    struct button_msg message = { 0 };
+    k_msgq_get( &test_msgq, &message, K_FOREVER );
+    zassert_equal( message.press, BUTTON_PRESS, "Button press should be BUTTON_PRESS" );
+    zassert_equal( message.button, BUTTON_1, "Button should be BUTTON_1" ); // TODO: Hardcoded button needs to be replaced
 }
 
 ZTEST( integration, test_button_release )
@@ -68,10 +69,11 @@ ZTEST( integration, test_button_release )
     k_sleep( K_MSEC( 10 ) );
     gpio_emul_input_set( button.port, button.pin, 1 );
 
-    // Wait for the button event
-    enum button_press button_event = BUTTON_PRESS;
-    k_msgq_get( &test_msgq, &button_event, K_FOREVER );
-    zassert_equal( button_event, BUTTON_RELEASE, "Button event should be BUTTON_RELEASE" );
+    // Wait for the button message
+    struct button_msg message = { 0 };
+    k_msgq_get( &test_msgq, &message, K_FOREVER );
+    zassert_equal( message.press, BUTTON_RELEASE, "Button press should be BUTTON_RELEASE" );
+    zassert_equal( message.button, BUTTON_1, "Button should be BUTTON_1" ); // TODO: Hardcoded button needs to be replaced
 }
 
 ZTEST_SUITE( integration, NULL, NULL, NULL, after_test, NULL );

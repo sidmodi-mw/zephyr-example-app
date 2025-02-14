@@ -9,6 +9,8 @@
 #include <zephyr/logging/log.h>
 #include <zephyr/zbus/zbus.h>
 
+#include "app_version.h"
+
 LOG_MODULE_REGISTER( app, CONFIG_APP_LOG_LEVEL );
 
 static bool print_channel_data_iterator( const struct zbus_channel *chan, void *user_data )
@@ -56,6 +58,8 @@ static bool print_observer_data_iterator( const struct zbus_observer *obs, void 
 int main( void )
 {
     int count = 0;
+
+    LOG_INF( "App version: %s-%s", APP_VERSION_STRING, STRINGIFY( APP_BUILD_VERSION ) );
 
     LOG_INF( "Channel list:" );
     zbus_iterate_over_channels_with_user_data( print_channel_data_iterator, &count );

@@ -7,13 +7,13 @@
 
 #include "zbus_channels.h"
 
-LOG_MODULE_REGISTER( test_uart_thread, CONFIG_LOG_LEVEL_DBG );
+LOG_MODULE_REGISTER( test_uart_thread, LOG_LEVEL_DBG );
 
 static void after_test( void * );
 static void test_listener_callback( const struct zbus_channel *chan );
 
 ZBUS_LISTENER_DEFINE( test_lis, test_listener_callback );
-ZBUS_CHAN_ADD_OBS( UART_CHAN, test_lis, 3 );
+ZBUS_CHAN_ADD_OBS( UART_CHAN, test_lis, 0 );
 
 K_MSGQ_DEFINE( test_msgq, sizeof( struct uart_msg ), 10, 1 );
 
