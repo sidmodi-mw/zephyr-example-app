@@ -64,6 +64,9 @@
 				"--clobber-output",
 				"-p",
 				"native_sim",
+				"--enable-lsan",
+				"--enable-asan",
+				"--enable-ubsan",
 				"-T",
 				"tests"
 			],

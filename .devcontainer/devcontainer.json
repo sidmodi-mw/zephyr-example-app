@@ -35,14 +35,14 @@
                 "mcu-debug.debug-tracker-vscode",
                 "ms-vscode.embedded-tools",
                 "ms-vscode.cpptools",
-                "ms-vscode.vscode-serial-monitor",
                 "marus25.cortex-debug",
                 "stkb.rewrap",
                 "wayou.vscode-todo-highlight",
                 "augustocdias.tasks-shell-input",
                 "cnshenj.vscode-task-manager",
                 "nordic-semiconductor.nrf-connect",
-                "nordic-semiconductor.nrf-connect-extension-pack"
+                "nordic-semiconductor.nrf-connect-extension-pack",
+                "awsxxf.serialterminal"
             ]
         }
     }
