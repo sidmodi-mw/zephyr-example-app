@@ -55,6 +55,13 @@ static bool print_observer_data_iterator( const struct zbus_observer *obs, void 
     return true;
 }
 
+#include <zephyr/task_wdt/task_wdt.h>
+static int watchdog_init( void )
+{
+    __ASSERT( ( task_wdt_init( NULL ) == 0 ), "Task watchdog init failure" );
+    return 0;
+}
+
 int main( void )
 {
     int count = 0;
@@ -71,3 +78,5 @@ int main( void )
 
     return 0;
 }
+
+SYS_INIT( watchdog_init, POST_KERNEL, 0 );

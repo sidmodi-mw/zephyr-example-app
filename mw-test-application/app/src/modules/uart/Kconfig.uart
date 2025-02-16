@@ -2,7 +2,7 @@ menu "UART"
 
 config APP_UART_THREAD_STACK_SIZE
 	int "Thread stack size"
-	default 1536
+	default 4096
 
 config APP_UART_WATCHDOG_TIMEOUT_SECONDS
 	int "Watchdog timeout seconds"

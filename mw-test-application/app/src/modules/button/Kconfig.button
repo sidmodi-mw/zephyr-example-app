@@ -2,7 +2,7 @@ menu "Button"
 
 config APP_BUTTON_THREAD_STACK_SIZE
 	int "Thread stack size"
-	default 256
+	default 1024
 
 config APP_BUTTON_MSGQ_SIZE
 	int "Message queue size"

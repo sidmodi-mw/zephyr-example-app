@@ -85,6 +85,7 @@ void button_thread( void )
     LOG_DBG( "Button module thread started" );
 
     task_wdt_id = task_wdt_add( wdt_timeout_ms, task_wdt_callback, (void *)k_current_get() );
+
     if( task_wdt_id < 0 )
     {
         LOG_ERR( "Failed to add task to watchdog: %d", task_wdt_id );
